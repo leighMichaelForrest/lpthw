@@ -59,8 +59,9 @@ def spider_room():
 
 def gold_room():
     """Print out the victory text."""
-    print(dedent("""You are in a bright room with Italian marble floor to ceiling.
-    You have found the gold.\n\n\n
+    print(dedent("""
+You are in a bright room with Italian marble floor to ceiling.
+You have found the gold.\n\n\n
     """))
     exit()
 
