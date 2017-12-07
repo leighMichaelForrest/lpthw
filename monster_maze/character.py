@@ -83,16 +83,6 @@ class Hero(Character):
         else:
             return False
 
-    def drink_from_fountain(self):
-        """Increase life to 15."""
-        self.strength = 15
-
-    def dragon_qualified(self):
-        """Determine if hero is qualified to fight the dragon."""
-        return (
-            self.has_item('amulet') and self.has_item('magic wand')
-            and has_item('small treasure') and has_item('giant ruby')
-            )
     def __str__(self):
         """String representing the Hero."""
         str_1 = ""

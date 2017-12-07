@@ -35,10 +35,6 @@ class Map(object):
         'atrium': Atrium(),
         'fred': FredsLair(),
         'spiders': SpiderRoom(),
-        'fountain': MagicFountain(),
-        'minor_treasure': MinorTreasureRoom(),
-        'ghost_knights': GhostKnightsRoom(),
-        'toxic_swamp': ToxicSwamp(),
         'dragon': DragonRoom(),
         'dead': Death(),
         'finished':Finished()
