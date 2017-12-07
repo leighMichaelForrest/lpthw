@@ -3,8 +3,8 @@ from random import randint
 from textwrap import dedent
 
 from character import Character, Enemy, Hero
-from scene import FredsLair, Atrium, MinorTreasureRoom, SpiderRoom, Death, \
-    Finished, GhostKnightsRoom, DragonRoom, MagicFountain, ToxicSwamp
+from scene import FredsLair, Atrium, SpiderRoom, Death, \
+    Finished, GhostKnightRoom, DragonRoom, ToxicSwamp
 
 
 class Engine(object):
@@ -34,7 +34,9 @@ class Map(object):
     scenes = {
         'atrium': Atrium(),
         'fred': FredsLair(),
-        'spiders': SpiderRoom(),
+        'spider': SpiderRoom(),
+        'toxic_swamp': ToxicSwamp(),
+        'ghost_knight': GhostKnightRoom(),
         'dragon': DragonRoom(),
         'dead': Death(),
         'finished':Finished()

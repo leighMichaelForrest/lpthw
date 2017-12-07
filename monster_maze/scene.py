@@ -26,10 +26,8 @@ class EnemyRoom(Scene):
 
 class EnemiesRoom(Scene):
     """Class for a roomful of enemies."""
-    def __init__(self, treasure):
-        super(Scene, self).__init__()
+    def __init__(self):
         self.enemies = []
-        self.treasure = treasure
 
     def fight(self, character, enemy):
         character.battle(enemy)
@@ -59,19 +57,233 @@ class Death(Scene):
         exit(1)
 
 
-class SpiderRoom(EnemiesRoom):
-    def enter(self, hero):
-        # empty enemy variable
-        enemy = None
+class ToxicSwamp(Scene):
+    def __init__(self):
+        super(Scene, self).__init__()
+        self.treasure = 'elixir'
 
+    def enter(self, hero):
+        print(dedent("""You are in the toxic swamp."""))
+
+        if hero.has_item('amulet'):
+            print("You are immune to the toxic swamp. You make it to the shore.")
+        else:
+            index = 10
+
+            while index > 0:
+                factor = randint(0,5)
+                if factor == 0:
+                    print("You advance")
+                    index -= factor
+                else:
+                    print("The hero has been attacked by the swamp.")
+                    hero.defeat(factor)
+
+                # determine if hero is dead
+                if hero.alive():
+                    continue
+                else:
+                    return 'dead'
+
+        while True:
+            print("A door appears.")
+            if self.treasure:
+                print("A bottle of elixir is beside the door.")
+            print("What is your choice?")
+            choice = input("> ")
+            # there is an elixir. hero can take it.
+            if choice == "take elixir" and self.treasure:
+                hero.add_inventory(self.treasure)
+                print(f"{hero.name} takes {self.treasure}")
+                self.treasure = None
+            elif choice == "open door":
+                return 'dragon'
+        else:
+            print("Make a valid choice.")
+
+
+class Atrium(EnemyRoom):
+
+    def __init__(self):
+        super(EnemyRoom, self).__init__()
+        self.enemy = Character("Frankie", 1)
+        self.treasure = 'elixir'
+
+    def enter(self, hero):
+        print(dedent("""You are in the Atrium."""))
+
+        if self.enemy:
+            print("Frankie is in the room.")
+        else:
+            print("Frankie has been neutralized.")
+
+        while True:
+            choice = input("Enter your choice\n> ")
+
+            # if choice is attack, hero dies
+            if choice == "attack":
+                return 'dead'
+            # if choice is piledrive frankie, hero dies
+            elif choice == "piledrive frankie" and self.enemy:
+                print("Frankie crushes your skull with the greatest of ease.")
+                return 'dead'
+            # if choice is confuse frankie, he is neutralized
+            elif choice == "confuse frankie" and self.enemy:
+                print("Frankie is slumped into a corner.")
+                print("A bottle of elixir appears.")
+                self.enemy = None
+            elif choice == "open door right":
+                if self.enemy:
+                    print(f"{self.enemy} guards the door.")
+                    continue
+                else:
+                    return 'spider'
+            elif choice == "open door left":
+                if self.enemy:
+                    print(f"{self.enemy} guards the door.")
+                    continue
+                else:
+                    return 'fred'
+            elif choice == "take elixir" and not self.enemy and self.treasure:
+                hero.add_inventory(self.treasure)
+                print(f"{hero.name} takes {self.treasure}")
+                self.treasure = None
+            else:
+                print("Make a valid choice.")
+
+
+class FredsLair(EnemyRoom):
+
+    def __init__(self):
+        super(EnemyRoom, self).__init__()
+        self.enemy = Character("Fred", 6)
+        self.treasure = 'small ruby'
+
+    def enter(self, hero):
+        print(dedent("""You are in the Fred's Lair."""))
+
+        if self.enemy:
+            print("Fred is in the room.")
+        else:
+            print("Fred has been neutralized.")
+
+        while True:
+            choice = input("Enter your choice\n> ")
+
+            # if choice is attack, battle
+            if choice == "attack":
+                # if Fred is neutralized, continue
+                if not self.enemy:
+                    print("Fred has been neutralized.")
+                    continue
+                else:
+                    self.fight(hero, self.enemy)
+
+                # Check if current enemy and self are alive
+                if not self.enemy.alive():
+                        self.enemy = None
+                        print(f"The {self.treasure} is available.")
+                if not hero.alive():
+                    return 'dead'
+
+            # Handle door choices
+            elif choice == "open door ahead":
+                if self.enemy:
+                    print(f"{self.enemy} guards the door.")
+                    continue
+                else:
+                    return 'ghost_knight'
+            elif choice == "open door right":
+                if self.enemy:
+                    print(f"{self.enemy} guards the door.")
+                    continue
+                else:
+                    return 'spider'
+            elif choice == "go back":
+                return 'atrium'
+            # handle treasure
+            # if enemies are killed, hero can take treasure
+            elif choice == f'take {self.treasure}':
+                if not self.enemy:
+                    print(f"You take {self.treasure}.")
+                    hero.add_inventory(self.treasure)
+                    self.treasure = None
+                    continue
+                else:
+                    print(f"You must kill {self.enemy} to take the {self.treasure}.")
+            else:
+                print("Make a valid choice.")
+
+
+class DragonRoom(EnemyRoom):
+
+    def __init__(self):
+        super(EnemyRoom, self).__init__()
+        self.enemy = Character("Dragon", 25)
+
+    def enter(self, hero):
+
+        # To enter, you must posess the amulet, halberd, and the ruby
+        if (
+            hero.has_item('amulet') and hero.has_item('small ruby')
+            and hero.has_item('halberd')
+        ):
+            print(dedent("""You are in the Dragon Room. There is no way out. You
+            either kill the dragon or you die."""))
+        else:
+            print("You must have the halberd, the small ruby, and the amulet to enter.")
+            return 'atrium'
+
+        while True:
+            # dragon has 50/50 chance of attacking
+            if randint(0,1) == 1:
+                print(f"{self.enemy} attacks!")
+                self.fight(self.enemy, hero)
+
+            # in dragon room, print out stats in each iteration
+            print(f"{hero.name}: {hero.strength}")
+            print(f"{self.enemy}: {self.enemy.strength}")
+            choice = input("Enter your choice\n> ")
+
+            # if choice is attack, battle
+            if choice == "attack":
+                self.fight(hero, self.enemy)
+
+                # Check if enemy and self are alive
+                if not self.enemy.alive():
+                    print("The dragon has been vanquished!\n\n\n")
+                    return 'finished'
+                if not hero.alive():
+                    return 'dead'
+
+            elif choice == "drink elixir":
+                if hero.drink_elixir():
+                    print(f"{hero.name} drinks the elixir. Strength is now 20.")
+                else:
+                    print(f"{hero.name} has no elixir.")
+            else:
+                print("Make a valid choice.")
+
+
+
+class SpiderRoom(EnemiesRoom):
+    """Room filled with spiders. Subclasses EnemiesRoom."""
+    def __init__(self):
+        super(EnemiesRoom, self).__init__()
+        self.enemies = []
         # first add ten spiders
         for i in range(5):
             self.add_enemy('spider', 2)
 
+        self.treasure = 'amulet'
+
+    def enter(self, hero):
+        # empty enemy variable
+        enemy = None
+
         # print the text
         print(dedent("""You are in the spider room!"""))
-        print(self.enemies)
-
+        print(f"There are {len(self.enemies)} spiders.")
         # Action loop
         while True:
             # initialize spider
@@ -83,7 +295,7 @@ class SpiderRoom(EnemiesRoom):
 
             #50/50 chance of spiders attacking; spider must exist
             if enemy is not None and randint(0,1) == 1:
-                print("Spider attacks!")
+                print(f"{enemy} attacks!")
                 self.fight(enemy, hero)
 
             # get the choice
@@ -97,7 +309,7 @@ class SpiderRoom(EnemiesRoom):
                     self.treasure = None
                     continue
                 else:
-                    print("You must kill enemies to take the amulet.")
+                    print(f"You must kill enemies to take the {self.treasure}.")
 
             # if choice is either the door left or forward, the enemies must
             # be destroyed
@@ -105,13 +317,13 @@ class SpiderRoom(EnemiesRoom):
                 if self.enemies:
                     print("The enemies must be defeated before opening door.")
                 else:
-                    return 'finished'
-
+                    return 'toxic_swamp'
             elif choice == "open door left":
-                if self.enemies:
-                    print("The enemies must be defeated before opening door.")
-                else:
-                    return 'finished'
+                    if self.enemies:
+                        print("The enemies must be defeated before opening door.")
+                    else:
+                        return 'fred'
+
             # the option to go back is always available
             elif choice == "go back":
                 return 'atrium'
@@ -132,7 +344,7 @@ class SpiderRoom(EnemiesRoom):
                 if self.enemies:
                     print(f"There are {len(self.enemies)} left.")
                 elif not self.enemies and self.treasure:
-                    print("The amulet is in the room.")
+                    print(f"{self.treasure} is in the room.")
                 else:
                     pass
             else:
@@ -140,13 +352,19 @@ class SpiderRoom(EnemiesRoom):
 
 
 class GhostKnightRoom(EnemiesRoom):
+    """Room filled with ghost knights. Subclasses EnemiesRoom."""
+    def __init__(self):
+        super(EnemiesRoom, self).__init__()
+        self.enemies = []
+        # first add ten spiders
+        for i in range(1):
+            self.add_enemy('ghost knight', 5)
+
+        self.treasure = 'halberd'
+
     def enter(self, hero):
         # empty enemy variable
         enemy = None
-
-        # first add 5 ghost knights
-        for i in range(1):
-            self.add_enemy('Ghost Knight', 5)
 
         # print the text
         print(dedent("""You are in the Ghost Knight room!"""))
@@ -176,7 +394,7 @@ class GhostKnightRoom(EnemiesRoom):
                     self.treasure = None
                     continue
                 else:
-                    print("You must kill enemies to take the amulet.")
+                    print("You must kill enemies to take {self.treasure}.")
 
             # if choice is either the door left or forward, the enemies must
             # be destroyed
@@ -184,13 +402,13 @@ class GhostKnightRoom(EnemiesRoom):
                 if self.enemies:
                     print("The enemies must be defeated before opening door.")
                 else:
-                    return 'finished'
+                    return 'fred'
 
             elif choice == "open door right":
                 if self.enemies:
                     print("The enemies must be defeated before opening door.")
                 else:
-                    return 'finished'
+                    return 'toxic_swamp'
             # the option to go back is always available
             elif choice == "go back":
                 return 'atrium'
@@ -220,5 +438,9 @@ class GhostKnightRoom(EnemiesRoom):
 
 if __name__ == '__main__':
     hero = Hero("Leigh",12)
-    spider_room = GhostKnightRoom('large ruby')
-    print(spider_room.enter(hero))
+    hero.add_inventory('amulet')
+    # hero.add_inventory('halberd')
+    # hero.add_inventory('small ruby')
+    atrium = ToxicSwamp()
+    print(atrium.enter(hero))
+    #print(atrium.enter(hero))

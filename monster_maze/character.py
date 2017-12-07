@@ -83,6 +83,13 @@ class Hero(Character):
         else:
             return False
 
+    def drink_elixir(self):
+        if self.has_item('elixir'):
+            self.strength = 20
+            return True
+        else:
+            return False
+
     def __str__(self):
         """String representing the Hero."""
         str_1 = ""
