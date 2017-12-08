@@ -13,7 +13,7 @@ class Engine(object):
     def __init__(self, scene_map):
         """Initialize the engine with the map and the hero."""
         self.scene_map = scene_map
-        self.hero = Hero('Leigh', 12)
+        self.hero = Hero('Lancelot', 14)
 
     def play(self):
         """Play the game."""
@@ -29,7 +29,7 @@ class Engine(object):
 
 
 class Map(object):
-
+    """Class that holds all of the scenes and returns the next one."""
 
     scenes = {
         'atrium': Atrium(),
@@ -43,6 +43,7 @@ class Map(object):
     }
 
     def __init__(self, start_scene):
+        """Initialize with the start scene."""
         self.start_scene = start_scene
 
     def next_scene(self, scene_name):

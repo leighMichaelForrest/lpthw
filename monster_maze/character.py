@@ -5,6 +5,7 @@ from textwrap import dedent
 class Character(object):
     """The object representing the player."""
     def __init__(self, name, strength):
+        """Initialize with the hero's name and his/her strength."""
         self.name = name
         self.strength = strength
 
@@ -20,7 +21,8 @@ class Character(object):
         return factor
 
     def attack_dice(self, factor):
-        """Return a reverse sorted array of integers between 1 and 6."""
+        """Return a reverse sorted array of integers between 1 and 6. Based on
+        the classic board game 'Risk.'"""
         dice = []
         for i in range(factor):
             dice.append(randint(1,6))
