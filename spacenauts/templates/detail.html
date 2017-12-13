@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="astro-detail">
+      <img src="{{astronaut['image']}}" alt="">
+      <a href="{{astronaut['url']}}">{{astronaut['name']}}</a>
+      <p>{{astronaut['summary']}}</p>
+      <a href="/">Back</a>
+    </div>
+  </body>
+</html>

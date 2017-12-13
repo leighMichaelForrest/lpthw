@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    {% for astronaut in astronauts %}
+      <div class="astro-card">
+          <img src="{{ astronaut['image']}}" alt="{{ astronaut['name']}}">
+          <a href="{{ astronaut['link'] }}">{{ astronaut['name'] }}</a>
+      </div>
+    {% endfor %}
+  </body>
+</html>

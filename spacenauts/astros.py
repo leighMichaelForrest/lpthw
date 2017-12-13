@@ -21,6 +21,42 @@ def astros():
     return astros
 
 
+def astro_image(astro_wiki):
+    """"Get an image of an astronaut """
+    images = astro_wiki.images
+    # todo get a whitelist of images
+    images = [img for img in images if img.endswith('.jpg')]
+    return random.choice(images)
+
+
+def home_data():
+    """Get data for the homepage."""
+    # array for homepage
+    astro_list = []
+    # get list of astronauts from the api
+    astronauts = astros()
+
+    # process the list of astronauts
+    for astro in astronauts:
+        astro_wiki = wikipedia.page(astro)
+        astro_dict = {}
+        astro_dict['link'] = '/' + astro
+        astro_dict['name'] = astro.replace('_', ' ').title()
+        astro_dict['image'] = astro_image(astro_wiki)
+        astro_list.append(astro_dict)
+
+    return astro_list
+
+
+def detail_data(astro):
+    # get list of valid data
+    astro_list = astros()
+
+    # get a dictionary for the entry
+    astro_data = astro_wiki(astro_list, astro)
+    return astro_data
+
+
 def astro_wiki(lyst, astro):
     """Get dictionary of wikipedia data of astro."""
     astro_dict = {}
@@ -33,10 +69,8 @@ def astro_wiki(lyst, astro):
             astro_dict['summary'] = wikipedia.summary(astro)
             astro_dict['url'] = astro_wiki.url
             # strip out bad images (.svg) and pick random one
-            # todo: get a whitelist of images 
-            images = astro_wiki.images
-            images = [img for img in images if img.endswith('.jpg')]
-            astro_dict['image'] = random.choice(images)
+            # todo: get a whitelist of images
+            astro_dict['image'] = astro_image(astro_wiki)
         else:
             raise ValueError
     # Handle exceptions
@@ -54,14 +88,4 @@ def astro_wiki(lyst, astro):
 
 
 if __name__ == '__main__':
-    # Get astronauts
-    astronauts = astros()
-
-
-    for astro in astronauts:
-        astro_data = astro_wiki(astronauts, astro)
-        print("{0}:{1}\n\n{2}\n{3}\n".format(
-            astro_data['name'],
-            astro_data['summary'],
-            astro_data['url'],
-            astro_data['image']))
+    print(home_data())

@@ -1,0 +1,39 @@
+* {
+  font-size: 12px;
+  background-color: red;
+}
+
+.astro-card {
+  width: 100%;
+  text-align: center;
+}
+
+.astro-card > img {
+  display: block;
+  width: 100%;
+}
+
+.astro-card > a {
+  font-family: Helvetica, sans-serif;
+  color: black;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.astro-card > a:visited {
+  color: black;
+}
+
+/* detail styles */
+.astro-detail > a {
+    font-size: 1.6rem;
+}
+
+.astro-detail > p {
+    font-size: 1.2rem;
+}
+
+.astro-detail > img {
+    width: 150px;
+    display: block;
+}
