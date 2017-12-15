@@ -1,11 +1,13 @@
 from flask import Flask
 from flask import render_template
-from astros import home_data, detail_data
+from astronauts import Astronauts
+
 app = Flask(__name__)
+astros = astronauts.Astronauts()
 
 @app.route('/')
 def home():
-    astronauts = home_data()
+    astronauts = astros.get_astros()
     return render_template("index.html", astronauts=astronauts)
 
 @app.route('/<string:astronaut>')
