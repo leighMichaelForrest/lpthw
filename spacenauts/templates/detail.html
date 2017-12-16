@@ -7,9 +7,9 @@
   </head>
   <body>
     <div class="astro-detail">
-      <img src="{{astronaut['image']}}" alt="">
-      <a href="{{astronaut['url']}}">{{astronaut['name']}}</a>
-      <p>{{astronaut['summary']}}</p>
+      <img src="{{ astro_data['image']}}" alt="{{ astro_data['name']}}">
+      <p>{{ astro_data['name'] }}</p>
+      <p>{{ astro_data["summary"]}}</p>
       <a href="/">Back</a>
     </div>
   </body>
